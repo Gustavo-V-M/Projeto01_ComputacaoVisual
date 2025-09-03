@@ -45,3 +45,5 @@
 
 # Build directory of CMake
 **/build/
+
+**/.vscode/
