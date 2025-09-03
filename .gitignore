@@ -40,5 +40,8 @@
 # debug information files
 *.dwo
 
-# SDL repository for local development
+# SDL directory for local development
 **/lib/
+
+# Build directory of CMake
+**/build/
