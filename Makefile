@@ -11,8 +11,8 @@ SDL_LIB_DIR = $(SDL_DIR)\\lib
 SDL_DLL_DIR = $(SDL_DIR)\\bin
 SDL_DLL_FILE = SDL3.dll
 
-CC = gcc
-CFLAGS = -std=c23 -Wall -Wextra -Wpedantic -Wno-unused-result
+CC = g++
+CFLAGS = -std=c++23 -Wall -Wextra -Wpedantic -Wno-unused-result
 LDFLAGS = -L$(SDL_LIB_DIR)
 LDLIBS = -lSDL3
 INC_DIRS = $(addprefix -I, $(SDL_INC_DIR))
@@ -20,7 +20,7 @@ INC_DIRS = $(addprefix -I, $(SDL_INC_DIR))
 # Incluir subdiretorio(s) em SUBDIR, caso exista (ex. organizacao de projeto).
 SUBDIR = 
 INC = $(wildcard *.h $(foreach fd, $(SUBDIR), $(fd)/*.h))
-SRC = $(wildcard *.c $(foreach fd, $(SUBDIR), $(fd)/*.c))
+SRC = $(wildcard *.cpp $(foreach fd, $(SUBDIR), $(fd)/*.cpp))
 OBJ = $(SRC:.c=.o)
 
 .PHONY: all clean
