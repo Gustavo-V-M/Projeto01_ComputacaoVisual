@@ -36,10 +36,16 @@ Histogram::Histogram(SDL_Surface *surface) {
         histogram[r]++;
     }
 
+    for (size_t i = 0; i < 256; i++) {
+        SDL_Log("Histogram[%zu] = %f", i, histogram[i]);
+        histogram[i] = histogram[i] / pixel_count;
+        SDL_Log("Normalized Histogram[%zu] = %f", i, histogram[i]);
+    }
+
 }
 
 Histogram::~Histogram() {};
-int *Histogram::get_histogram() { return histogram; }
+double *Histogram::get_histogram() { return histogram; }
 bool Histogram::is_high_contrast() { 
 
     double threshold = 40.0;
@@ -98,8 +104,8 @@ bool Histogram::is_dark() {
 
     // Draw the histogram
     for (int x = 0; x < width; x++) {
-        int bin = (x * 256) / width; // Map pixel x to histogram bin
-        int bin_height = (histogram[bin] * height) / max_value; // Normalize bin height
+        int bin = (x * 256) / width;
+        int bin_height = (histogram[bin] * height) / max_value;
 
         for (int y = height - 1; y >= height - bin_height; y--) {
             Uint32* pixels = (Uint32*)surface->pixels;
@@ -109,3 +115,5 @@ bool Histogram::is_dark() {
 
     return surface;
  }
+
+

@@ -24,6 +24,7 @@
 #include <histogram.h>
 #include <render.h>
 #include <to_grey_scale.h>
+#include <equalizator.h>
 
 
 int main(int argc, char **argv)
@@ -73,6 +74,8 @@ int main(int argc, char **argv)
   main_surface = converted_surface;
   to_grey_scale(main_surface);
 
+  Equalizator equalizator(main_surface, new Histogram(main_surface));
+  main_surface = equalizator.get_equalized_surface();
 
   SDL_Texture* main_texture_grey = main_renderer ? SDL_CreateTextureFromSurface(main_renderer, main_surface) : NULL;
   if (!main_texture_grey) {
@@ -92,6 +95,8 @@ int main(int argc, char **argv)
   } else {
     SDL_Log("The image is not high contrast.");
   }
+
+
   // SDL_Texture* main_texture = main_renderer ? IMG_LoadTexture(main_renderer, main_image_path) : NULL;
   SDL_Surface* secundary_suface = histogram.render_histogram(secondary_renderer, secondary_width, secondary_height);
   SDL_Texture* secondary_texture = secondary_renderer ? SDL_CreateTextureFromSurface(secondary_renderer, secundary_suface) : NULL;
@@ -100,8 +105,6 @@ int main(int argc, char **argv)
   // Checks if the images were correctly displayed
   if (!main_texture_grey) SDL_Log("IMG_LoadTexture (main) failed: %s", SDL_GetError());
   if (!secondary_texture) SDL_Log("IMG_LoadTexture (secondary) failed: %s", SDL_GetError());
-
-
 
 
   // Calls the event loop

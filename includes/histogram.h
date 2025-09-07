@@ -28,9 +28,9 @@ class Histogram {
         bool is_high_contrast();
         bool is_dark();
         SDL_Surface* render_histogram(SDL_Renderer* renderer, int width, int height);
-        int *get_histogram();
+        double *get_histogram();
     private:
-        int histogram[256];
+        double histogram[256];
         int pixel_count;
 };
 
