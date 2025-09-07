@@ -24,8 +24,6 @@ void to_grey_scale(SDL_Surface* surface) {
 
     SDL_LockSurface(surface);
 
-    SDL_Log("Converting surface to greyscale...");
-
     const SDL_PixelFormatDetails *format = SDL_GetPixelFormatDetails(surface->format);
     
     Uint8 r, g, b, a;

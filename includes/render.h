@@ -4,10 +4,10 @@
  * Gustavo Villela Mitraud                      RA
  * Matheus Marçal Ramos de Oliveira             RA
  * Sabrina Midori Futami Teixeira de Carvalho   RA 10410220
- * 
+ *
  * Class 07N - Subject: Visual Computation - Project n. 01
  * Teacher: Andre Kishimoto
- * 
+ *
  * Refferences:
  * Official SDL Wiki: https://wiki.libsdl.org/SDL3/
  * Youtube Channels:
@@ -22,33 +22,45 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 
-void sdl_exit();
+typedef struct
+{
+    SDL_Window **main_window;
+    SDL_Window **secondary_window;
+    SDL_Renderer **main_renderer;
+    SDL_Texture **unqualized_texture;
+    SDL_Texture **equalized_texture;
+    SDL_Renderer **secondary_renderer;
+    SDL_Texture **unequalized_histogram_texture;
+    SDL_Texture **equalized_histogram_texture;
+} event_loop_arguments;
 
-bool sdl_init();
+class Renderer
+{
+public:
+    Renderer();
+    ~Renderer();
 
-SDL_Window* create_window(const char* title, int width, int height, bool resizable, SDL_Window* parent);
+    static bool sdl_init();
+    static void sdl_exit();
 
-void position_secondary(SDL_Window* main_window, SDL_Window* secondary_window);
+    SDL_Window *create_window(const char *title, int width, int height, bool resizable, SDL_Window *parent = nullptr);
+    void position_secondary(SDL_Window *main_window, SDL_Window *secondary_window);
 
-bool is_closed(const SDL_Event& event, SDL_Window* window);
+    void destroy_window(SDL_Window *&window, SDL_Renderer *&renderer, SDL_Texture *&texture);
 
-void destroy_window(SDL_Window*& window, SDL_Renderer*& renderer, SDL_Texture*& texture);
+    void render(SDL_Renderer *renderer, SDL_Texture *texture);
+    void render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Window *window);
 
-void render(SDL_Renderer* renderer, SDL_Texture* texture);
+    void event_loop(event_loop_arguments args);
+    bool get_image_size(const char *path, int &width, int &height);
 
-SDL_Rect center_button(SDL_Window* window, int button_width, int button_height, int margin);
+private:
+    SDL_Rect center_button(SDL_Window *window, int button_width, int button_height, int margin);
+    void draw_button(SDL_Renderer *renderer, const SDL_Rect &button_rectangle, bool hovered, bool pressed);
+    static void render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, float area_x, float area_y, float area_width, float area_height);
+    bool is_closed(const SDL_Event &event, SDL_Window *window);
 
-void draw_button(SDL_Renderer* renderer, const SDL_Rect& button_rectangle, bool hovered, bool pressed);
-
-void render_secondary(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Window* window);
-
-void event_loop(SDL_Window*& main_window,
-                SDL_Window*& secondary_window,
-                SDL_Renderer*& main_renderer,
-                SDL_Texture*& main_texture,
-                SDL_Renderer*& secondary_renderer,
-                SDL_Texture*& secondary_texture);
-
-bool get_image_size(const char* path, int& width, int& height);
+    bool is_button_pressed;
+};
 
 #endif // RENDER_H

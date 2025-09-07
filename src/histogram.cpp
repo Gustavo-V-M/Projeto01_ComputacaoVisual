@@ -35,13 +35,6 @@ Histogram::Histogram(SDL_Surface *surface) {
         SDL_GetRGBA(pixels[i], format, NULL, &r, &g, &b, &a);
         histogram[r]++;
     }
-
-    for (size_t i = 0; i < 256; i++) {
-        SDL_Log("Histogram[%zu] = %f", i, histogram[i]);
-        histogram[i] = histogram[i] / pixel_count;
-        SDL_Log("Normalized Histogram[%zu] = %f", i, histogram[i]);
-    }
-
 }
 
 Histogram::~Histogram() {};
