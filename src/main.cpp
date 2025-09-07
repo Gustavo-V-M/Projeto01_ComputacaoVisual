@@ -36,8 +36,11 @@ int main(int argc, char **argv)
     atexit(renderer.sdl_exit);
 
     // Images paths
-    const char *main_image_path = "C:\\Users\\Gustavo\\Documents\\Faculdade\\comp_visual\\Projeto01_ComputacaoVisual\\assets\\image.jpg";
-    const char *secondary_image_path = "C:\\Users\\Gustavo\\Documents\\Faculdade\\comp_visual\\Projeto01_ComputacaoVisual\\assets\\image.jpg";
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <image_path>" << std::endl;
+        return EXIT_FAILURE;
+    }
+    const char *main_image_path = argv[1];
 
     // Images sizes
     int main_width, main_height;
