@@ -15,23 +15,11 @@
  * https://youtube.com/playlist?list=PLvv0ScY6vfd-RZSmGbLkZvkgec6lJ0BfX&si=iSFdVsWFjUHksRBu
  */
 
-#ifndef HISTOGRAM_H
-#define HISTOGRAM_H
+#ifndef TOGREYSCALE_H
+#define TOGREYSCALE_H
 
 #include <SDL3/SDL.h>
 
-class Histogram {
-    public:
-        Histogram(SDL_Surface *surface);
-        ~Histogram();
-
-        bool is_high_contrast();
-        bool is_dark();
-        SDL_Surface* render_histogram(SDL_Renderer* renderer, int width, int height);
-        int *get_histogram();
-    private:
-        int histogram[256];
-        int pixel_count;
-};
+void to_grey_scale(SDL_Surface* surface);
 
 #endif

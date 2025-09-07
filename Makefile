@@ -1,41 +1,48 @@
 
-
-# Atualizar TARGET com nome do executavel a ser gerado na compilacao.
 TARGET = main
 
-# Atualizar SDL_DIR com o local onde SDL3 esta instalado.
-# Uso da barra '\\' especifico para Windows.
 SDL_DIR = lib\\SDL3
 SDL_INC_DIR = $(SDL_DIR)\\include
 SDL_LIB_DIR = $(SDL_DIR)\\lib
 SDL_DLL_DIR = $(SDL_DIR)\\bin
 SDL_DLL_FILE = SDL3.dll
 
+SDL_IMAGE_DIR = lib\\SDL3_image
+SDL_IMAGE_INC_DIR = $(SDL_IMAGE_DIR)\\include
+SDL_IMAGE_LIB_DIR = $(SDL_IMAGE_DIR)\\lib
+SDL_IMAGE_DLL_DIR = $(SDL_IMAGE_DIR)\\bin
+SDL_IMAGE_DLL_FILE = SDL3_image.dll
+
+
 CC = g++
 CFLAGS = -std=c++23 -Wall -Wextra -Wpedantic -Wno-unused-result
-LDFLAGS = -L$(SDL_LIB_DIR)
-LDLIBS = -lSDL3
-INC_DIRS = $(addprefix -I, $(SDL_INC_DIR))
+LDFLAGS = -L$(SDL_LIB_DIR) -L$(SDL_IMAGE_LIB_DIR)
+LDLIBS = -lSDL3 -lSDL3_image
+PROJECT_INC_DIR = includes
+INC_DIRS = $(addprefix -I, $(SDL_INC_DIR) $(PROJECT_INC_DIR) $(SDL_IMAGE_INC_DIR))
 
-# Incluir subdiretorio(s) em SUBDIR, caso exista (ex. organizacao de projeto).
 SUBDIR = 
-INC = $(wildcard *.h $(foreach fd, $(SUBDIR), $(fd)/*.h))
-SRC = $(wildcard *.cpp $(foreach fd, $(SUBDIR), $(fd)/*.cpp))
-OBJ = $(SRC:.c=.o)
+INC = $(wildcard includes/*.h)
+SRC = $(wildcard src/*.cpp)
+OBJ = $(SRC:.cpp=.o)
 
 .PHONY: all clean
 
 all: $(TARGET)
 
-# Comandos especificos para Windows (del, copy).
 clean:
 	del /S *.o
-	del /S $(SDL_DLL_FILE)
 	del /S $(TARGET).exe
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) $(INC_DIRS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 	copy $(SDL_DLL_DIR)\\$(SDL_DLL_FILE) .\\$(SDL_DLL_FILE)
+	copy $(SDL_IMAGE_DLL_DIR)\\$(SDL_IMAGE_DLL_FILE) .\\$(SDL_IMAGE_DLL_FILE)
 
-%.o: %.c $(INC)
+%.o: %.cpp $(INC)
 	$(CC) $(CFLAGS) $(INC_DIRS) -c $< -o $@
+
+debug:
+	@echo SRC = $(SRC)
+	@echo OBJ = $(OBJ)
+	@echo INC = $(INC)
