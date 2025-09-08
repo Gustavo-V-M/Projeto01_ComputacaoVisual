@@ -1,31 +1,37 @@
-#
-#   REFERÊNCIA: 
-#   https://github.com/libsdl-org/SDL/blob/main/docs/INTRO-cmake.md
-#   
-#
-#
-#
-
 cmake_minimum_required(VERSION 3.16)
-project(main C)
+project(main LANGUAGES CXX)
 
-# set the output directory for built objects.
-# This makes sure that the dynamic library goes into the build directory automatically.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# A pasta com o código fonte da SDL3 deve estar em lib/SDL3
+# Diretórios de saída organizados
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
+# Adiciona SDL3 e SDL3_image (submodules clonados em lib/)
 add_subdirectory(lib/SDL3 EXCLUDE_FROM_ALL)
-set(USE_SDL3_TARGET SDL3::SDL3)
+add_subdirectory(lib/SDL3_image EXCLUDE_FROM_ALL)
 
-# Create your game executable target as usual
-if(WIN32)
-    add_executable(main WIN32 main.c)
-else()
-    add_executable(main main.c)
+# Fontes do seu projeto
+file(GLOB SRC "src/*.cpp")
+add_executable(main ${SRC})
+
+# Headers locais
+target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/includes)
+
+# Linka bibliotecas SDL
+target_link_libraries(main PRIVATE SDL3::SDL3 SDL3_image::SDL3_image)
+
+# Copiar DLLs no Windows para a pasta bin/
+if (WIN32)
+    add_custom_command(TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3::SDL3>
+            $<TARGET_FILE_DIR:main>
+    )
+    add_custom_command(TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3_image::SDL3_image>
+            $<TARGET_FILE_DIR:main>
+    )
 endif()
-
-
-# Link to the actual SDL3 library.
-target_link_libraries(main PRIVATE ${USE_SDL3_TARGET})
