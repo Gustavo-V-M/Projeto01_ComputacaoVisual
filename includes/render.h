@@ -21,6 +21,7 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <vector>
 
 typedef struct
 {
@@ -33,6 +34,13 @@ typedef struct
     SDL_Texture **unequalized_histogram_texture;
     SDL_Texture **equalized_histogram_texture;
 } event_loop_arguments;
+
+struct Button {
+    SDL_Rect rect;
+    bool hovered;
+    bool pressed;
+    std::string label;
+};
 
 class Renderer
 {
@@ -54,9 +62,13 @@ public:
     void event_loop(event_loop_arguments args);
     bool get_image_size(const char *path, int &width, int &height);
 
+    void handle_event(const SDL_Event& e, std::vector<Button>& buttons);
+
+
 private:
     SDL_Rect center_button(SDL_Window *window, int button_width, int button_height, int margin);
-    void draw_button(SDL_Renderer *renderer, const SDL_Rect &button_rectangle, bool hovered, bool pressed);
+    SDL_Rect side_button(SDL_Window *window, int button_width, int button_height, int margin);
+    void draw_button(SDL_Renderer* renderer, Button& button);
     static void render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, float area_x, float area_y, float area_width, float area_height);
     bool is_closed(const SDL_Event &event, SDL_Window *window);
 

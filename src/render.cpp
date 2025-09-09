@@ -101,53 +101,104 @@ void Renderer::render(SDL_Renderer *renderer, SDL_Texture *texture)
   SDL_RenderTexture(renderer, texture, NULL, NULL);
   SDL_RenderPresent(renderer);
 }
+SDL_Rect Renderer::center_button(SDL_Window *window, int button_width, int button_height, int margin) {
+    SDL_Rect rect{0, 0, 0, 0};
+    if (!window) return rect;
 
-SDL_Rect Renderer::center_button(SDL_Window *window, int button_width, int button_height, int margin)
-{
-  SDL_Rect button_rectangle{0, 0, 0, 0};
-  if (!window)
-    return button_rectangle;
-  int window_width = 0, window_height = 0;
-  SDL_GetWindowSize(window, &window_width, &window_height);
-  button_rectangle.w = button_width;
-  button_rectangle.h = button_height;
-  button_rectangle.x = (window_width - button_width) / 2;
-  button_rectangle.y = window_height - button_height - margin;
-  return button_rectangle;
+    int window_width = 0, window_height = 0;
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    rect.w = button_width;
+    rect.h = button_height;
+    rect.x = (window_width - button_width) / 2;
+    rect.y = window_height - button_height - margin;
+
+    return rect;
 }
 
-void Renderer::draw_button(SDL_Renderer *renderer, const SDL_Rect &button_rectangle, bool hovered, bool pressed)
-{
-  if (!renderer || button_rectangle.w <= 0 || button_rectangle.h <= 0)
-    return;
-  Uint8 R = 70, G = 70, B = 75, A = 255;
-  SDL_FRect float_rectangle{
-      (float)button_rectangle.x,
-      (float)button_rectangle.y,
-      (float)button_rectangle.w,
-      (float)button_rectangle.h};
-  SDL_SetRenderDrawColor(renderer, R, G, B, A);
-  SDL_RenderFillRect(renderer, &float_rectangle);
-  if (hovered)
-  {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 50);
-    SDL_RenderFillRect(renderer, &float_rectangle);
-  }
-  if (pressed)
-  {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    SDL_RenderFillRect(renderer, &float_rectangle);
-    static Uint32 last_toggle_time = 0;
-    Uint32 current_time = SDL_GetTicks();
-    const Uint32 debounce_delay = 600; // milliseconds
+SDL_Rect Renderer::side_button(SDL_Window *window, int button_width, int button_height, int margin) {
+    SDL_Rect rect{0, 0, 0, 0};
+    if (!window) return rect;
 
-    if (current_time - last_toggle_time > debounce_delay) {
-      is_button_pressed = !is_button_pressed;
-      last_toggle_time = current_time;
+    int window_width = 0, window_height = 0;
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    rect.w = button_width;
+    rect.h = button_height;
+    rect.x = window_width - button_width - 10;
+    rect.y = window_height - button_height - margin;
+
+    return rect;
+}
+
+void Renderer::draw_button(SDL_Renderer *renderer, Button& button) {
+    if (!renderer || button.rect.w <= 0 || button.rect.h <= 0) return;
+
+    SDL_FRect float_rect{
+        (float)button.rect.x,
+        (float)button.rect.y,
+        (float)button.rect.w,
+        (float)button.rect.h
+    };
+
+    // Base
+    SDL_SetRenderDrawColor(renderer, 70, 70, 75, 255);
+    SDL_RenderFillRect(renderer, &float_rect);
+
+    // Hover
+    if (button.hovered) {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 50);
+        SDL_RenderFillRect(renderer, &float_rect);
     }
-  }
-  SDL_SetRenderDrawColor(renderer, 180, 180, 190, 255);
-  SDL_RenderRect(renderer, &float_rectangle);
+
+    // Pressed
+    if (button.pressed) {
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+        SDL_RenderFillRect(renderer, &float_rect);
+
+        static Uint32 last_toggle_time = 0;
+        Uint32 current_time = SDL_GetTicks();
+        const Uint32 debounce_delay = 600;
+
+        if (current_time - last_toggle_time > debounce_delay) {
+            is_button_pressed = !is_button_pressed;
+            last_toggle_time = current_time;
+        }
+    }
+
+    // Borda
+    SDL_SetRenderDrawColor(renderer, 180, 180, 190, 255);
+    SDL_RenderRect(renderer, &float_rect);
+}
+
+
+void Renderer::handle_event(const SDL_Event& e, std::vector<Button>& buttons) {
+    SDL_Point mousePoint;
+    if (e.type == SDL_EVENT_MOUSE_MOTION) {
+        int mx = e.motion.x;
+        int my = e.motion.y;
+        for (auto& btn : buttons) {
+            mousePoint = { mx, my };
+            btn.hovered = SDL_PointInRect(&mousePoint, &btn.rect);
+        }
+    }
+
+    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN && e.button.button == SDL_BUTTON_LEFT) {
+        int mx = e.button.x;
+        int my = e.button.y;
+        for (auto& btn : buttons) {
+            mousePoint = { mx, my };
+            if (SDL_PointInRect(&mousePoint, &btn.rect)) {
+                btn.pressed = true;
+            }
+        }
+    }
+
+    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT) {
+        for (auto& btn : buttons) {
+            btn.pressed = false;
+        }
+    }
 }
 
 void Renderer::render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, float area_x, float area_y, float area_width, float area_height)
@@ -168,34 +219,58 @@ void Renderer::render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, 
   SDL_FRect destination_rectangle{draw_x, draw_y, draw_w, draw_h};
   SDL_RenderTexture(renderer, texture, nullptr, &destination_rectangle);
 }
-
 void Renderer::render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Window *window)
 {
-  if (!renderer || !window)
-    return;
-  SDL_RenderClear(renderer);
-  int button_width = 200, button_height = 48, button_margin = 16, button_gap = 8;
-  SDL_Rect button = center_button(window, button_width, button_height, button_margin);
-  int window_width = 0, window_height = 0;
-  SDL_GetWindowSize(window, &window_width, &window_height);
-  float area_x = 0.f;
-  float area_y = 0.f;
-  float area_width = (float)window_width;
-  float area_height = (float)(button.y - button_gap);
-  if (area_height < 0.f)
-    area_height = 0.f;
-  if (texture)
-  {
-    render_texture_fit(renderer, texture, area_x, area_y, area_width, area_height);
-  }
-  float mouse_x = 0, mouse_y = 0;
-  Uint32 mouse_buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
-  SDL_Point mouse_point{(int)mouse_x, (int)mouse_y};
-  bool hovered = SDL_PointInRect(&mouse_point, &button);
-  bool pressed = hovered && (mouse_buttons & SDL_BUTTON_LMASK);
-  draw_button(renderer, button, hovered, pressed);
-  SDL_RenderPresent(renderer);
+    if (!renderer || !window)
+        return;
+
+    SDL_RenderClear(renderer);
+
+    int button_width = 200;
+    int button_height = 48;
+    int button_margin = 16;
+    int button_gap = 32;
+
+    int window_width = 0, window_height = 0;
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    float area_x = 0.f;
+    float area_y = 0.f;
+    float area_width = (float)window_width;
+    float area_height = (float)(window_height - button_height - button_margin * 2);
+    if (area_height < 0.f)
+        area_height = 0.f;
+
+    if (texture)
+    {
+        render_texture_fit(renderer, texture, area_x, area_y, area_width, area_height);
+    }
+
+    int total_width = (button_width * 2) + button_gap;
+    int start_x = (window_width - total_width) / 2;
+    int y = window_height - button_height - button_margin;
+
+    Button button1{ { start_x, y, button_width, button_height }, false, false, "Botão 1" };
+    Button button2{ { start_x + button_width + button_gap, y, button_width, button_height }, false, false, "Botão 2" };
+
+    // Mouse
+    float mouse_x, mouse_y;
+    Uint32 mouse_buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
+    SDL_Point mouse_point{ (int) mouse_x, (int) mouse_y };
+
+    // Atualizar estados
+    button1.hovered = SDL_PointInRect(&mouse_point, &button1.rect);
+    button1.pressed = button1.hovered && (mouse_buttons & SDL_BUTTON_LMASK);
+
+    button2.hovered = SDL_PointInRect(&mouse_point, &button2.rect);
+    button2.pressed = button2.hovered && (mouse_buttons & SDL_BUTTON_LMASK);
+
+    draw_button(renderer, button1);
+    draw_button(renderer, button2);
+
+    SDL_RenderPresent(renderer);
 }
+
 
 void Renderer::event_loop(event_loop_arguments args)
 {
