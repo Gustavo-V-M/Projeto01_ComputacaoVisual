@@ -42,8 +42,10 @@ build/bin/main.exe
 
 ## Group Members
 
-* Enzo Guarnieri                               RA
-* Júlia Campolim Oste                          RA
-* Gustavo Villela Mitraud                      RA
-* Matheus Marçal Ramos de Oliveira             RA
-* Sabrina Midori Futami Teixeira de Carvalho   RA 10410220
+| Nome | RA |
+| --- | --- |
+| Enzo Guarnieri | 10410074 |
+| Júlia Campolim Oste | 10408802 |
+| Gustavo Villela Mitraud | 10400866 |
+| Matheus Marçal Ramos de Oliveira | 10409001 |
+| Sabrina Midori Futami Teixeira de Carvalho | 10410220 |
