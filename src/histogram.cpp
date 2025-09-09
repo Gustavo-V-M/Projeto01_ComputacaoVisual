@@ -4,15 +4,20 @@
  * Gustavo Villela Mitraud                      RA
  * Matheus Marçal Ramos de Oliveira             RA
  * Sabrina Midori Futami Teixeira de Carvalho   RA 10410220
- * 
+ *
  * Class 07N - Subject: Visual Computation - Project n. 01
  * Teacher: Andre Kishimoto
- * 
+ *
  * Refferences:
  * Official SDL Wiki: https://wiki.libsdl.org/SDL3/
+ * Official SDL_ttf Documentation: https://www.libsdl.org/projects/old/SDL_ttf/docs/SDL_ttf.html
+ * Book:
+ * GONZALEZ, R. C.; WOODS, R. E. Processamento digital de imagens, 3ª edição.
  * Youtube Channels:
  * https://youtube.com/playlist?list=PLvv0ScY6vfd-RZSmGbLkZvkgec6lJ0BfX&si=yqz1Lqy13JvwXYoc
  * https://youtube.com/playlist?list=PLvv0ScY6vfd-RZSmGbLkZvkgec6lJ0BfX&si=iSFdVsWFjUHksRBu
+ * Font:
+ * https://fonts.google.com/specimen/Roboto?preview.text=Whereas%20recognition%20of%20the%20inherent%20dignity
  */
 
 #include <histogram.h>
@@ -59,7 +64,8 @@ bool Histogram::is_high_contrast() {
 
     return (sqrt(standard_deviation / pixel_count) > threshold);
 
- } // TODO: implementar
+ } 
+ 
 bool Histogram::is_dark() { 
     int light_pixels = 0;
     int dark_pixels = 0;
@@ -76,6 +82,49 @@ bool Histogram::is_dark() {
 
     return dark_pixels >= light_pixels;
  } 
+
+ float Histogram::mean_intensity() {
+    double total_intensity = 0.0;
+    int pixel_count = 0;
+
+    for (int i = 0; i < 256; i++) {
+        total_intensity += (histogram[i] * i);
+        pixel_count += histogram[i];
+    }
+
+    double mean = total_intensity / pixel_count;
+    SDL_Log("Mean Intensity: %f", mean);
+
+    return mean;
+}
+
+double Histogram::standard_deviation() { 
+    double total_intensity = 0.0;
+    int pixel_count = 0;
+
+    for (int i = 0; i < 256; i++) {
+        total_intensity += histogram[i] * i;
+        pixel_count += histogram[i];
+    }
+
+    if (pixel_count == 0)
+        return 0.0;
+
+    double mean = total_intensity / pixel_count;
+
+    double variance = 0.0;
+    for (int i = 0; i < 256; i++) {
+        double diff = i - mean;
+        variance += histogram[i] * diff * diff;
+    }
+
+    variance /= pixel_count;
+
+    double standard_deviation = sqrt(variance);
+    SDL_Log("Standard Deviation: %f", standard_deviation);
+
+    return standard_deviation;
+} 
 
  SDL_Surface *Histogram::render_histogram(SDL_Renderer* renderer, int width, int height) {
     if (!renderer || width <= 0 || height <= 0) return nullptr;

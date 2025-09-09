@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <render.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 Renderer::Renderer() {
   is_button_pressed = false;
@@ -150,6 +151,37 @@ void Renderer::draw_button(SDL_Renderer *renderer, const SDL_Rect &button_rectan
   SDL_RenderRect(renderer, &float_rectangle);
 }
 
+void Renderer::renderText(SDL_Renderer *renderer, TTF_Font *font, int window_width, int window_height, char *text) {
+  SDL_Color color = { 0, 0, 0, 255 };
+
+  SDL_Surface* text_surface = TTF_RenderText_Solid(font, text, strlen(text), color);
+  if (!text_surface) {
+      SDL_Log("TTF_RenderText_Solid Error");
+      return;
+  } 
+
+  SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+
+  if (!text_texture) {
+      SDL_Log("SDL_CreateTextureFromSurface Error: %s", SDL_GetError());
+      SDL_DestroySurface(text_surface);
+      return;
+  } 
+
+  int text_width  = text_surface->w;
+  int text_height = text_surface->h;
+
+  SDL_DestroySurface(text_surface);
+
+  const float x = (float)((window_width  - text_width)  / 2);
+  const float y = (float)(window_height - (4 * text_height));
+
+  SDL_FRect text_rect = { x, y, (float)text_width, (float)text_height };
+
+  SDL_RenderTexture(renderer, text_texture, nullptr, &text_rect);
+  SDL_DestroyTexture(text_texture);
+}
+
 void Renderer::render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, float area_x, float area_y, float area_width, float area_height)
 {
   if (!renderer || !texture || area_width <= 0.f || area_height <= 0.f)
@@ -169,32 +201,44 @@ void Renderer::render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, 
   SDL_RenderTexture(renderer, texture, nullptr, &destination_rectangle);
 }
 
-void Renderer::render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Window *window)
+void Renderer::render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Window *window, TTF_Font *font, char *text)
 {
-  if (!renderer || !window)
-    return;
-  SDL_RenderClear(renderer);
-  int button_width = 200, button_height = 48, button_margin = 16, button_gap = 8;
-  SDL_Rect button = center_button(window, button_width, button_height, button_margin);
-  int window_width = 0, window_height = 0;
-  SDL_GetWindowSize(window, &window_width, &window_height);
-  float area_x = 0.f;
-  float area_y = 0.f;
-  float area_width = (float)window_width;
-  float area_height = (float)(button.y - button_gap);
-  if (area_height < 0.f)
-    area_height = 0.f;
-  if (texture)
-  {
-    render_texture_fit(renderer, texture, area_x, area_y, area_width, area_height);
-  }
-  float mouse_x = 0, mouse_y = 0;
-  Uint32 mouse_buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
-  SDL_Point mouse_point{(int)mouse_x, (int)mouse_y};
-  bool hovered = SDL_PointInRect(&mouse_point, &button);
-  bool pressed = hovered && (mouse_buttons & SDL_BUTTON_LMASK);
-  draw_button(renderer, button, hovered, pressed);
-  SDL_RenderPresent(renderer);
+    if (!renderer || !window)
+        return;
+
+    SDL_RenderClear(renderer);
+
+    int button_width = 200, button_height = 48, button_margin = 16, button_gap = 40;
+    SDL_Rect button = center_button(window, button_width, button_height, button_margin);
+
+    int window_width = 0, window_height = 0;
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    float area_x = 0.f;
+    float area_y = 0.f;
+    float area_width = (float)window_width;
+    float area_height = (float)(button.y - button_gap);
+    if (area_height < 0.f)
+        area_height = 0.f;
+
+    if (texture)
+    {
+        render_texture_fit(renderer, texture, area_x, area_y, area_width, area_height);
+    }
+
+    float mouse_x = 0, mouse_y = 0;
+    Uint32 mouse_buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
+    SDL_Point mouse_point{(int)mouse_x, (int)mouse_y};
+
+    bool hovered = SDL_PointInRect(&mouse_point, &button);
+    bool pressed = hovered && (mouse_buttons & SDL_BUTTON_LMASK);
+
+    if(text) {
+      renderText(renderer, font, window_width, window_height, text);
+    }
+
+    draw_button(renderer, button, hovered, pressed);
+    SDL_RenderPresent(renderer);
 }
 
 void Renderer::event_loop(event_loop_arguments args)
@@ -217,12 +261,12 @@ void Renderer::event_loop(event_loop_arguments args)
     if (!is_button_pressed)
     {
       render(*args.main_renderer, *args.unqualized_texture);
-      render_secondary(*args.secondary_renderer, *args.unequalized_histogram_texture, *args.secondary_window);
+      render_secondary(*args.secondary_renderer, *args.unequalized_histogram_texture, *args.secondary_window, *args.font, *args.text_histogram_texture);
     }
     else
     {
       render(*args.main_renderer, *args.equalized_texture);
-      render_secondary(*args.secondary_renderer, *args.equalized_histogram_texture, *args.secondary_window);
+      render_secondary(*args.secondary_renderer, *args.equalized_histogram_texture, *args.secondary_window, *args.font, NULL);
     }
   }
 }

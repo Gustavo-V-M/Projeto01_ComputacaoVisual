@@ -28,6 +28,8 @@ class Histogram {
         bool is_high_contrast();
         bool is_dark();
         SDL_Surface* render_histogram(SDL_Renderer* renderer, int width, int height);
+        float mean_intensity();
+        double standard_deviation();
         double *get_histogram();
     private:
         double histogram[256];

@@ -10,9 +10,14 @@
  *
  * Refferences:
  * Official SDL Wiki: https://wiki.libsdl.org/SDL3/
+ * Official SDL_ttf Documentation: https://www.libsdl.org/projects/old/SDL_ttf/docs/SDL_ttf.html
+ * Book:
+ * GONZALEZ, R. C.; WOODS, R. E. Processamento digital de imagens, 3ª edição.
  * Youtube Channels:
  * https://youtube.com/playlist?list=PLvv0ScY6vfd-RZSmGbLkZvkgec6lJ0BfX&si=yqz1Lqy13JvwXYoc
  * https://youtube.com/playlist?list=PLvv0ScY6vfd-RZSmGbLkZvkgec6lJ0BfX&si=iSFdVsWFjUHksRBu
+ * Font:
+ * https://fonts.google.com/specimen/Roboto?preview.text=Whereas%20recognition%20of%20the%20inherent%20dignity
  */
 
 #include <iostream>
@@ -20,10 +25,13 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_surface.h>
 #include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <histogram.h>
 #include <render.h>
 #include <to_grey_scale.h>
 #include <equalizator.h>
+
+using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -71,20 +79,39 @@ int main(int argc, char **argv)
     SDL_Renderer *secondary_renderer = secondary_window ? SDL_CreateRenderer(secondary_window, NULL) : NULL;
 
     SDL_Surface *main_surface = IMG_Load(main_image_path);
+
     if (!main_surface)
     {
         SDL_Log("IMG_Load failed (%s): %s", main_image_path, SDL_GetError());
         return EXIT_FAILURE;
     }
+
     SDL_Surface *converted_surface = SDL_ConvertSurface(main_surface, SDL_PIXELFORMAT_RGBA32);
+    
     if (!converted_surface)
     {
         SDL_Log("SDL_ConvertSurface failed: %s", SDL_GetError());
         return EXIT_FAILURE;
     }
+
+    if (!TTF_Init()) {
+        SDL_Log("Couldn't initialise SDL_ttf: %s\n", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+
+    TTF_Font *font = TTF_OpenFont("assets/font-roboto.ttf", 18.0f);
+    //TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+
+    if (!font) {
+        SDL_Log("Couldn't open font: %s\n", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+
     SDL_DestroySurface(main_surface);
     main_surface = converted_surface;
+
     to_grey_scale(main_surface);
+
     Histogram histogram(main_surface);
     Equalizator equalizator(main_surface, &histogram);
 
@@ -102,6 +129,7 @@ int main(int argc, char **argv)
     // Checks if the images were correctly displayed
     if (!main_texture_grey)
         SDL_Log("IMG_LoadTexture (main) failed: %s", SDL_GetError());
+
     if (!secondary_texture)
         SDL_Log("IMG_LoadTexture (secondary) failed: %s", SDL_GetError());
 
@@ -111,7 +139,15 @@ int main(int argc, char **argv)
 
     SDL_Texture *equalized_texture = main_renderer ? SDL_CreateTextureFromSurface(main_renderer, equalized_surface) : NULL;
     SDL_Texture *equalized_histogram_texture = secondary_renderer ? SDL_CreateTextureFromSurface(secondary_renderer, equalized_histogram_surface) : NULL;
-  
+
+    float histogram_mean = histogram.mean_intensity();
+    float histogram_stddev = histogram.standard_deviation();
+
+    const char *intensity = histogram_mean < 85 ? "escura" : (histogram_mean > 170 ? "clara" : "média");
+    const char *contrast = histogram_stddev < 35 ? "baixo" : (histogram_stddev > 80 ? "alto" : "médio");
+
+    char *text;
+    snprintf(text, 80, "Imagem %s de %s contraste", intensity, contrast);
 
     // Calls the event loop
     event_loop_arguments args;
@@ -123,6 +159,8 @@ int main(int argc, char **argv)
     args.unequalized_histogram_texture = &secondary_texture;
     args.equalized_histogram_texture = &equalized_histogram_texture;
     args.equalized_texture = &equalized_texture;
+    args.font = &font;
+    args.text_histogram_texture = &text;
 
     renderer.event_loop(args);
 

@@ -8,6 +8,7 @@ exemplo:
 mkdir lib && cd lib
 git clone https://github.com/libsdl-org/SDL_image lib/SDL3_image
 https://github.com/libsdl-org/SDL lib/SDL3
+git clone https://github.com/libsdl-org/SDL_ttf.git lib/SDL3_ttf
 ```
 2. rode os seguintes comandos para construir o programa:
 ```
