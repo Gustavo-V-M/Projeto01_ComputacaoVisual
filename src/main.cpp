@@ -5,7 +5,7 @@
  * Matheus Marçal Ramos de Oliveira             RA
  * Sabrina Midori Futami Teixeira de Carvalho   RA 10410220
  *
- * Class 07N - Subject: Visual Computation - Project n. 01
+ * Class 07N - Subject: Visual Computing - Project n. 01
  * Teacher: Andre Kishimoto
  *
  * Refferences:
