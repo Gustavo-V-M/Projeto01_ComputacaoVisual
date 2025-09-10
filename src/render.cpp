@@ -153,18 +153,16 @@ void Renderer::draw_button(SDL_Renderer *renderer, Button& button) {
 
     // Pressed
     if (button.pressed) {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-        SDL_RenderFillRect(renderer, &float_rect);
-
         static Uint32 last_toggle_time = 0;
         Uint32 current_time = SDL_GetTicks();
         const Uint32 debounce_delay = 600;
 
         if (current_time - last_toggle_time > debounce_delay) {
-            is_button_pressed = !is_button_pressed;
+            if (button.on_click) button.on_click(); 
             last_toggle_time = current_time;
         }
     }
+
 
     // Borda
     SDL_SetRenderDrawColor(renderer, 180, 180, 190, 255);
@@ -174,32 +172,50 @@ void Renderer::draw_button(SDL_Renderer *renderer, Button& button) {
 
 void Renderer::handle_event(const SDL_Event& e, std::vector<Button>& buttons) {
     SDL_Point mousePoint;
-    if (e.type == SDL_EVENT_MOUSE_MOTION) {
-        int mx = e.motion.x;
-        int my = e.motion.y;
-        for (auto& btn : buttons) {
-            mousePoint = { mx, my };
-            btn.hovered = SDL_PointInRect(&mousePoint, &btn.rect);
-        }
-    }
 
-    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN && e.button.button == SDL_BUTTON_LEFT) {
-        int mx = e.button.x;
-        int my = e.button.y;
-        for (auto& btn : buttons) {
+    int mx, my;
+
+    switch (e.type) {
+        case SDL_EVENT_MOUSE_MOTION:
+            mx = e.motion.x;
+            my = e.motion.y;
             mousePoint = { mx, my };
-            if (SDL_PointInRect(&mousePoint, &btn.rect)) {
-                btn.pressed = true;
+            for (auto& btn : buttons) {
+                btn.hovered = SDL_PointInRect(&mousePoint, &btn.rect);
             }
-        }
-    }
+            break;
 
-    if (e.type == SDL_EVENT_MOUSE_BUTTON_UP && e.button.button == SDL_BUTTON_LEFT) {
-        for (auto& btn : buttons) {
-            btn.pressed = false;
-        }
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            if (e.button.button == SDL_BUTTON_LEFT) {
+                mx = e.button.x;
+                my = e.button.y;
+                mousePoint = { mx, my };
+                for (auto& btn : buttons) {
+                    if (SDL_PointInRect(&mousePoint, &btn.rect)) {
+                        btn.pressed = true;
+
+                        if (btn.id == 1) {
+                            SDL_Log("Botão 1 pressionado!");
+                            is_button_pressed = !is_button_pressed;
+                        } else if (btn.id == 2) {
+                            SDL_Log("Botão 2 pressionado!"); 
+                        }
+                    }
+                }
+            }
+            break;
+
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+            if (e.button.button == SDL_BUTTON_LEFT) {
+                // Reseta todos os botões quando soltar o botão do mouse
+                for (auto& btn : buttons) {
+                    btn.pressed = false;
+                }
+            }
+            break;
     }
 }
+
 
 void Renderer::render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, float area_x, float area_y, float area_width, float area_height)
 {
@@ -250,8 +266,8 @@ void Renderer::render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SD
     int start_x = (window_width - total_width) / 2;
     int y = window_height - button_height - button_margin;
 
-    Button button1{ { start_x, y, button_width, button_height }, false, false, "Botão 1" };
-    Button button2{ { start_x + button_width + button_gap, y, button_width, button_height }, false, false, "Botão 2" };
+    Button button1{ { start_x, y, button_width, button_height }, 1, false, false, "Botão 1" };
+    Button button2{ { start_x + button_width + button_gap, y, button_width, button_height }, 2, false, false, "Botão 2" };
 
     // Mouse
     float mouse_x, mouse_y;
@@ -268,39 +284,76 @@ void Renderer::render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SD
     draw_button(renderer, button1);
     draw_button(renderer, button2);
 
+    secondary_buttons.push_back(button1);
+    secondary_buttons.push_back(button2);
+
     SDL_RenderPresent(renderer);
 }
 
-
 void Renderer::event_loop(event_loop_arguments args)
 {
-  SDL_Log("Entering event loop");
-  bool running = true;  
-  SDL_Event event;
-  while (running)
-  {
-    while (SDL_PollEvent(&event))
+    SDL_Log("Entering event loop");
+    bool running = true;  
+    SDL_Event event;
+
+    while (running)
     {
-      if (is_closed(event, *args.main_window) || (event.type == SDL_EVENT_QUIT || (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE)))
-      {
-        destroy_window(*args.main_window, *args.main_renderer, *args.unqualized_texture);
-        destroy_window(*args.secondary_window, *args.secondary_renderer, *args.unequalized_histogram_texture);
-        running = false;
-        break;
-      }
-    }
-    if (!is_button_pressed)
-    {
-      render(*args.main_renderer, *args.unqualized_texture);
-      render_secondary(*args.secondary_renderer, *args.unequalized_histogram_texture, *args.secondary_window);
-    }
-    else
-    {
-      render(*args.main_renderer, *args.equalized_texture);
-      render_secondary(*args.secondary_renderer, *args.equalized_histogram_texture, *args.secondary_window);
-    }
-  }
+        // Tratamento de eventos
+        while (SDL_PollEvent(&event))
+        {
+            // Fechar janelas ou pressionar ESC
+            if (is_closed(event, *args.main_window) || 
+                event.type == SDL_EVENT_QUIT || 
+                (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE))
+            {
+                destroy_window(*args.main_window, *args.main_renderer, *args.unqualized_texture);
+                destroy_window(*args.secondary_window, *args.secondary_renderer, *args.unequalized_histogram_texture);
+                running = false;
+                break;
+            }
+
+            if (event.type == SDL_EVENT_KEY_DOWN) {
+              if (event.key.key == SDLK_S) {
+                  SDL_Log("Tecla S pressionada! Salvando imagem...");
+
+                  SDL_Surface* surface_to_save = equalizator.get_equalized_surface();
+                  if (!surface_to_save) {
+                      SDL_Log("Erro: equalized_surface é NULL");
+                  } else {
+                      if (IMG_SavePNG(surface_to_save, "output_image.png") != 0) {
+                          SDL_Log("Erro ao salvar imagem: %s", SDL_GetError());
+                      } else {
+                          SDL_Log("Imagem salva com sucesso como output_image.png!");
+                      }
+                  }
+            }
 }
+
+            // Handle os botões da janela secundária
+            handle_event(event, secondary_buttons);
+        }
+
+        // Render da janela principal
+        if (!is_button_pressed)
+        {
+            render(*args.main_renderer, *args.unqualized_texture);
+        }
+        else
+        {
+            render(*args.main_renderer, *args.equalized_texture);
+        }
+
+        // Render da janela secundária (botões inclusos)
+        render_secondary(*args.secondary_renderer, *args.unequalized_histogram_texture, *args.secondary_window);
+
+        // Desenha os botões da janela secundária
+        for (auto& btn : secondary_buttons)
+        {
+            draw_button(*args.secondary_renderer, btn);
+        }
+    }
+}
+
 
 bool Renderer::get_image_size(const char *path, int &width, int &height)
 {

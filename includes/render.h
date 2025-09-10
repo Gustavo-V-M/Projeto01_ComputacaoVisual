@@ -22,6 +22,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <vector>
+#include <functional> 
 
 typedef struct
 {
@@ -37,9 +38,11 @@ typedef struct
 
 struct Button {
     SDL_Rect rect;
+    int id;
     bool hovered;
     bool pressed;
     std::string label;
+    std::function<void()> on_click;
 };
 
 class Renderer
@@ -72,6 +75,7 @@ private:
     static void render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, float area_x, float area_y, float area_width, float area_height);
     bool is_closed(const SDL_Event &event, SDL_Window *window);
 
+    std::vector<Button> secondary_buttons;
     bool is_button_pressed;
 };
 
