@@ -99,7 +99,7 @@ int main(int argc, char **argv)
         return SDL_APP_FAILURE;
     }
 
-    TTF_Font *font = TTF_OpenFont("assets/font-roboto.ttf", 18.0f);
+    TTF_Font *font = TTF_OpenFont("../../assets/font-roboto.ttf", 18.0f);
     //TTF_SetFontStyle(font, TTF_STYLE_BOLD);
 
     if (!font) {
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
     const char *intensity = histogram_mean < 85 ? "escura" : (histogram_mean > 170 ? "clara" : "média");
     const char *contrast = histogram_stddev < 35 ? "baixo" : (histogram_stddev > 80 ? "alto" : "médio");
 
-    char *text;
+    auto text = new char[80];
     snprintf(text, 80, "Imagem %s de %s contraste", intensity, contrast);
 
     // Calls the event loop
