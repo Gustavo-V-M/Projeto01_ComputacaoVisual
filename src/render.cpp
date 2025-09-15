@@ -241,6 +241,8 @@ void Renderer::render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SD
     SDL_RenderPresent(renderer);
 }
 
+
+
 void Renderer::event_loop(event_loop_arguments args)
 {
   SDL_Log("Entering event loop");
@@ -262,11 +264,39 @@ void Renderer::event_loop(event_loop_arguments args)
     {
       render(*args.main_renderer, *args.unqualized_texture);
       render_secondary(*args.secondary_renderer, *args.unequalized_histogram_texture, *args.secondary_window, *args.font, *args.text_histogram_texture);
+      if ((event.type == SDL_EVENT_KEY_DOWN) && (event.key.key == SDLK_S)){
+
+        int win_w, win_h;
+        SDL_GetWindowSize(*args.secondary_window, &win_w, &win_h);
+        SDL_Surface *surface = SDL_CreateSurface(win_w, win_h, SDL_PIXELFORMAT_RGBA32);
+
+        const char *path = "/assets/output_image.png";
+
+        if (!SDL_SaveBMP(surface, path)) {
+            SDL_Log("Imagem salva com sucesso em %s", path);
+        } else {
+            SDL_Log("Erro ao salvar imagem: %s", SDL_GetError());
+        }
+      }
     }
     else
     {
       render(*args.main_renderer, *args.equalized_texture);
       render_secondary(*args.secondary_renderer, *args.equalized_histogram_texture, *args.secondary_window, *args.font, NULL);
+      if ((event.type == SDL_EVENT_KEY_DOWN) && (event.key.key == SDLK_S)){
+
+        int win_w, win_h;
+        SDL_GetWindowSize(*args.secondary_window, &win_w, &win_h);
+        SDL_Surface *surface = SDL_CreateSurface(win_w, win_h, SDL_PIXELFORMAT_RGBA32);
+
+        const char *path = "/assets/output_image.png";
+
+        if (!SDL_SaveBMP(surface, path)) {
+            SDL_Log("Imagem salva com sucesso em %s", path);
+        } else {
+            SDL_Log("Erro ao salvar imagem: %s", SDL_GetError());
+        }
+      }
     }
   }
 }
