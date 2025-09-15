@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-set(SDLTTF_VENDORED OFF CACHE BOOL "Use system Harfbuzz instead of vendored")
+set(SDLTTF_VENDORED OFF)
 
 
 # Adiciona SDL3 e SDL3_image (submodules clonados em lib/)
