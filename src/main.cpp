@@ -123,6 +123,7 @@ int main(int argc, char **argv)
     args.unequalized_histogram_texture = &secondary_texture;
     args.equalized_histogram_texture = &equalized_histogram_texture;
     args.equalized_texture = &equalized_texture;
+    args.equalized_surface = &equalized_surface;
 
     renderer.event_loop(args);
 

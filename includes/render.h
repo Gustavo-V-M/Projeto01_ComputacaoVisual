@@ -34,6 +34,7 @@ typedef struct
     SDL_Renderer **secondary_renderer;
     SDL_Texture **unequalized_histogram_texture;
     SDL_Texture **equalized_histogram_texture;
+    SDL_Surface **equalized_surface;
 } event_loop_arguments;
 
 struct Button {

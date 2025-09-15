@@ -316,7 +316,7 @@ void Renderer::event_loop(event_loop_arguments args)
               if (event.key.key == SDLK_S) {
                   SDL_Log("Tecla S pressionada! Salvando imagem...");
 
-                  SDL_Surface* surface_to_save = equalizator.get_equalized_surface();
+                  SDL_Surface* surface_to_save = *args.equalized_surface;
                   if (!surface_to_save) {
                       SDL_Log("Erro: equalized_surface é NULL");
                   } else {
