@@ -2,29 +2,19 @@
 
 ## Development and Compilation
 
+**IMPORTANT** Clone this repo recursively
+
 ### On Windows
 
-1. Create a `lib/` folder and clone the SDL3 repositories inside it&#x20;
-   Example:
-
-```cmd
-mkdir lib && cd lib
-git clone https://github.com/libsdl-org/SDL_image lib/SDL3_image
-git clone https://github.com/libsdl-org/SDL lib/SDL3
-git clone https://github.com/libsdl-org/SDL_ttf.git lib/SDL3_ttf
-```
-
-2. Run the following commands to build the program:
+1. Run the following commands to build the program:
 ```
 cmake -S . -B build
 cmake --build build
 ```
 
-3. The executable will be available in the following folder:
+2. The executable will be available in the following folder:
 
 ```cmd
-build/bin/main
-or
 build/bin/main.exe
 ```
 
