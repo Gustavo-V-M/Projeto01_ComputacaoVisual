@@ -99,8 +99,18 @@ int main(int argc, char **argv)
         return SDL_APP_FAILURE;
     }
 
-    TTF_Font *font = TTF_OpenFont("../../assets/font-roboto.ttf", 18.0f);
-    //TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    const char *base_path_char = SDL_GetBasePath();
+
+    if (!base_path_char) {
+        SDL_Log("SDL_GetBasePath() failed: %s", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+
+    std::string font_path = base_path_char;
+    font_path += "../../assets/font-roboto.ttf";
+
+    SDL_free(const_cast<char *>(base_path_char));
+    TTF_Font *font = TTF_OpenFont(font_path.c_str(), 18.0f);
 
     if (!font) {
         SDL_Log("Couldn't open font: %s\n", SDL_GetError());
