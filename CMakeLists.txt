@@ -20,12 +20,6 @@ add_subdirectory(lib/SDL3_ttf EXCLUDE_FROM_ALL)
 file(GLOB SRC "src/*.cpp")
 add_executable(main ${SRC})
 
-add_custom_command(TARGET main POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_SOURCE_DIR}/assets/font-roboto.ttf"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-    COMMENT "Copiando font-roboto.ttf para a pasta bin/"
-)
 # Headers locais
 target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/includes)
 
@@ -48,5 +42,37 @@ if (WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:SDL3_ttf::SDL3_ttf>
             $<TARGET_FILE_DIR:main>
+    )
+endif()
+
+add_custom_command(TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:main>"
+        "${CMAKE_SOURCE_DIR}/"
+    COMMENT "Copiando executável para a raiz do projeto"
+)
+
+add_custom_command(TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/assets/font-roboto.ttf"
+        "${CMAKE_SOURCE_DIR}/"
+    COMMENT "Copiando font-roboto.ttf para a raiz do projeto"
+)
+
+if (WIN32)
+    add_custom_command(TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3::SDL3>
+            "${CMAKE_SOURCE_DIR}/"
+    )
+    add_custom_command(TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3_image::SDL3_image>
+            "${CMAKE_SOURCE_DIR}/"
+    )
+    add_custom_command(TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3_ttf::SDL3_ttf>
+            "${CMAKE_SOURCE_DIR}/"
     )
 endif()
