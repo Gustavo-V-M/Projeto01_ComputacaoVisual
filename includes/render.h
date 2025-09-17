@@ -59,10 +59,11 @@ public:
 
 private:
     SDL_Rect center_button(SDL_Window *window, int button_width, int button_height, int margin);
-    void draw_button(SDL_Renderer *renderer, const SDL_Rect &button_rectangle, bool hovered, bool pressed);
+    void draw_button(SDL_Renderer *renderer, const SDL_Rect &button_rectangle, bool hovered, bool pressed, TTF_Font *font);
     void renderText(SDL_Renderer *renderer, TTF_Font *font, int window_width, int window_height, char *text);
     static void render_texture_fit(SDL_Renderer *renderer, SDL_Texture *texture, float area_x, float area_y, float area_width, float area_height);
     bool is_closed(const SDL_Event &event, SDL_Window *window);
+
 
     bool is_button_pressed;
 };
