@@ -71,6 +71,57 @@ The group decided to divide the project tasks as follows:
 
 ### 1.4. Graphical User Interface with two windows
 
+The graphical interface is composed of two coordinated windows: a main window that displays the image being processed, and a secondary window that shows the image histogram together with an operation button. These components are managed by the **Renderer** class, which encapsulates SDL initialization, window management, rendering, event handling, and resource cleanup.
+
+- **Main window:** displays the image. Its initial size matches the size of the loaded image, and it starts centered on the primary monitor. Since it is resizable, the image automatically adapts to window resizing.
+
+- **Secondary window (child of the main):** created with a fixed size defined in the code, initially centered, and then repositioned to the right of the main window and vertically aligned with its center. Unlike a regular non-resizable window, it is created as a borderless window. This window displays the histogram of the image and includes an operation button (details in item 1.6).
+
+The interface operates as follows:
+
+1. The main window is created first, using the image dimensions obtained by `get_image_size()`. It is set as resizable, and since it serves as the parent, its `parent` parameter is set to `NULL`.
+
+2. The secondary window is then created with fixed dimensions, passing the main window as its parent. The code ensures that the main window exists before attempting to create the secondary one.
+
+3. Once both windows exist, `position_secondary()` repositions the secondary window to the right of the main window and vertically centers it relative to the parent.
+
+4. The image is loaded and converted to grayscale. If loading fails, an error message is logged using `SDL_GetError()`.
+
+5. In the secondary window, `center_button()` defines the geometry of a button that is horizontally centered and placed near the bottom, ensuring it does not overlap the histogram. This button is drawn with `draw_button()`, and it toggles between the states _“Equalized”_ and _“Not Equalized”_ when pressed.
+
+6. The program continues running inside `event_loop()`, which polls SDL events. It closes when the main window is destroyed (by clicking the X or pressing **ESC**), at which point the secondary window is also destroyed, since it depends on the main one.
+
+7. At termination, `destroy_window()` ensures that all windows, renderers, surfaces, and textures are properly released, avoiding memory leaks.
+
+**Implementation overview:**
+
+- **Initialization and cleanup:**
+
+  - `sdl_init()` starts SDL, while `sdl_exit()` shuts it down.
+  - `get_image_size()` uses `IMG_Load()` to obtain the image dimensions before creating the main window.
+
+- **Window creation and positioning:**
+
+  - `create_window()` builds the main window (resizable, using the image size) and the secondary window (fixed size, borderless, parented to the main).
+  - `position_secondary()` adjusts the secondary window’s placement beside the main one.
+
+- **Rendering:**
+
+  - `render()` draws the grayscale or equalized image in the main window, automatically adapting to resizing.
+  - `render_secondary()` manages the secondary window: it displays the histogram using `render_texture_fit()`, adds optional descriptive text with `renderText()`, and handles the action button via `draw_button()`.
+  - The button’s state is stored in `is_button_pressed`, which toggles between _“Equalized”_ and _“Not Equalized.”_
+
+- **Event handling:**
+
+  - `event_loop()` processes user inputs and system events. It closes the application when ESC is pressed or when the main window is closed.
+  - During execution, it alternates between rendering the original grayscale image and histogram, or their equalized versions, depending on the button state.
+
+- **Resource management:**
+
+  - `destroy_window()` ensures that textures, renderers, and windows are released in the correct order.
+
+Through this structure, the Renderer class guarantees a fluid interaction between the two windows: the main one presenting the image with resizing support, and the secondary one displaying the histogram, explanatory text, and an interactive button to switch between equalization modes.
+
 ---
 
 ### 1.5. Analyzing and displaying the histogram
