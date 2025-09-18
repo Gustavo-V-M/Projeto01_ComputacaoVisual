@@ -110,7 +110,12 @@ int main(int argc, char **argv)
     SDL_DestroySurface(main_surface);
     main_surface = converted_surface;
 
-    to_grey_scale(main_surface);
+    if (!is_grey_scale(main_surface)) {
+        to_grey_scale(main_surface);
+        SDL_Log("Imagem colorida convertida para escala de cinza.");
+    } else {
+        SDL_Log("Imagem já está em escala de cinza.");
+    }
 
     Histogram histogram(main_surface);
     Equalizator equalizator(main_surface, &histogram);
