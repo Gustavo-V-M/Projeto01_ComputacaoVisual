@@ -35,16 +35,16 @@ cmake --build build
 ./main <image-path>
 ```
 
-- Replace `image-path` for `image-type/image-name`
+- Replace `image-path` for `assets/<image-type>/<image-name>`
 
-- `image-type` can be:
+- `<image-type>` can be:
     - `bmp` or
     - `png` or
     - `jpg`
 
-- `image-name` can be:
-    - if JPG: `image.jpg`
-    - if BMP/PNG:
+- `<image-name>` can be:
+    - if `JPG`: `image.jpg`
+    - if `BMP` or `PNG`:
         - `image-high-contrast.<bmp, png>`
         - `image-low-contrast.<bmp, png>`
         - `image-light.<bmp, png>`
