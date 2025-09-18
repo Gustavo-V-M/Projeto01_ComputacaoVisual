@@ -18,6 +18,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_surface.h>
 
+//Transforms all pixels in grey scale
 static void to_grey_scale(SDL_Surface* surface) {
     if (!surface) return;
 
@@ -31,13 +32,14 @@ static void to_grey_scale(SDL_Surface* surface) {
 
     for (int i = 0; i < pixel_count; ++i) {
         SDL_GetRGBA(pixels[i], format, NULL, &r, &g, &b, &a);
-        Uint8 grey = (Uint8)(0.2125 * r + 0.7154 * g + 0.0721 * b);
+        Uint8 grey = (Uint8)(0.2125 * r + 0.7154 * g + 0.0721 * b); //Equation to transform image to grayscale
         pixels[i] = SDL_MapRGBA(format, NULL, grey, grey, grey, a);
     }
 
     SDL_UnlockSurface(surface);
 }
 
+//Check if all pixels satisfy R == G == B
 static bool is_grey_scale(SDL_Surface* surface) {
     if (!surface) return false;
 
