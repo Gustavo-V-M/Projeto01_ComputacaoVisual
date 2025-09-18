@@ -110,7 +110,14 @@ int main(int argc, char **argv)
     SDL_DestroySurface(main_surface);
     main_surface = converted_surface;
 
-    to_grey_scale(main_surface);
+    // Check if image is in grey scale
+    if (!is_grey_scale(main_surface)) {
+        // Change image to grey scale
+        to_grey_scale(main_surface);
+        SDL_Log("Colored image converted to grey scale.");
+    } else {
+        SDL_Log("Image is already in grey scale.");
+    }
 
     Histogram histogram(main_surface);
     Equalizator equalizator(main_surface, &histogram);

@@ -20,6 +20,7 @@
 
 #include <SDL3/SDL.h>
 
+bool is_grey_scale(SDL_Surface* surface);
 void to_grey_scale(SDL_Surface* surface);
 
 #endif
