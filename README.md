@@ -1,14 +1,10 @@
-# Project 01 of Visual Computing
-
----
-
-#### Class 07N - Project n. 01: Image Processing
+# Visual Computing - Project 01: Image Processing
 
 #### Professor: Andre Kishimoto
 
-#### Group Members
+#### Class 07N - Group Members
 
-|                    Nome                    |    RA    |
+|                    Name                    |    RA    |
 | :----------------------------------------: | :------: |
 |               Enzo Guarnieri               | 10410074 |
 |            Júlia Campolim Oste             | 10408802 |
@@ -21,7 +17,7 @@
 ### Summary
 
 1. [About the project](#1-about-the-project)<br>
-   1.1. [General aspects and technical requirements](#11-general-aspects-and-technical-requirements)<br>
+   1.1. [General aspects, technical requirements and task division](#11-general-aspects-technical-requirements-and-task-division)<br>
    1.2. [Loading the image](#12-loading-the-image)<br>
    1.3. [Analyzing and converting to grayscale](#13-analyzing-and-converting-to-grayscale)<br>
    1.4. [Graphical User Interface with two windows](#14-graphical-user-interface-with-two-windows)<br>
@@ -38,18 +34,18 @@
 
 ---
 
-### 1.1. General aspects and technical requirements
+### 1.1. General aspects, technical requirements and task division
 
-This application consists of opening two windows: one displaying a grayscale image (the program automatically converts the image to grayscale if it is not already), and another displaying the corresponding histogram that represents the image’s intensity values.
+This application consists basically of opening two windows: one displaying a grayscale image (the program automatically converts the image to grayscale if it is not already), and another displaying the corresponding histogram that represents the image’s intensity values (more details ahead).
 
 The following requirements were defined:
 
 - Language: C++
 - Mandatory libraries: SDL3 and SDL_image
 - Compiler: g++
-- Code quality: Code organized into structures and functions with clear responsibilities; proper memory management.
-- Documentation: A complete and detailed README.
-- Repository: Hosted on GitHub.
+- Code quality: code organized into structures and functions with clear responsibilities; proper memory management.
+- Documentation: a complete and detailed README.
+- Repository: hosted on GitHub.
 
 The group decided to divide the project tasks as follows:
 
