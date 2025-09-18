@@ -110,7 +110,9 @@ int main(int argc, char **argv)
     SDL_DestroySurface(main_surface);
     main_surface = converted_surface;
 
+    //Check if image is in grey scale
     if (!is_grey_scale(main_surface)) {
+        //Change image to grey scale
         to_grey_scale(main_surface);
         SDL_Log("Imagem colorida convertida para escala de cinza.");
     } else {
