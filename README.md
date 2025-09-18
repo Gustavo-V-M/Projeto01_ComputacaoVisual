@@ -32,8 +32,23 @@ cmake --build build
 4. Run the program using
 
 ```bash
-./main assets/<image-name>
+./main <image-path>
 ```
+
+- Replace `image-path` for <image-type>/<image-name>
+
+- **Image-type** can be:
+    - `bmp` or
+    - `png` or
+    - `jpg`
+
+- **Image-name** can be:
+    - if JPG: `image.jpg`
+    - if BMP/PNG:
+        - `image-high-contrast.<bmp, png>`
+        - `image-low-contrast.<bmp, png>`
+        - `image-light.<bmp, png>`
+        - `image-dark.<bmp, png>`
 
 ### On Linux
 
