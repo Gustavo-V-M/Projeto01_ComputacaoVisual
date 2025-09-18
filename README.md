@@ -35,14 +35,14 @@ cmake --build build
 ./main <image-path>
 ```
 
-- Replace `image-path` for <image-type>/<image-name>
+- Replace `image-path` for `image-type/image-name`
 
-- **Image-type** can be:
+- `image-type` can be:
     - `bmp` or
     - `png` or
     - `jpg`
 
-- **Image-name** can be:
+- `image-name` can be:
     - if JPG: `image.jpg`
     - if BMP/PNG:
         - `image-high-contrast.<bmp, png>`
