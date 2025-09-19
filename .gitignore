@@ -37,6 +37,10 @@
 *.out
 *.app
 
+main
+main.exe
+font-roboto.ttf
+
 # debug information files
 *.dwo
 
