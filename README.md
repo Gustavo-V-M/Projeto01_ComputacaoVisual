@@ -41,7 +41,7 @@ This application consists basically of opening two windows: one displaying a gra
 The following requirements were defined:
 
 - Language: C++
-- Mandatory libraries: SDL3 and SDL_image
+- Mandatory libraries: SDL3, SDL3_image and SDL3_ttf
 - Compiler: g++
 - Code quality: code organized into structures and functions with clear responsibilities; proper memory management.
 - Documentation: a complete and detailed README.
