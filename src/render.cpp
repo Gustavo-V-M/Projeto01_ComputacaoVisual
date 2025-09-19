@@ -137,7 +137,7 @@ void Renderer::draw_button(SDL_Renderer *renderer, const SDL_Rect &button_rectan
 
     if (font) {
         const char *label = is_button_pressed ? "Equalizado" : "Não Equalizado";
-        SDL_Color color = {255, 255, 255, 255};
+        SDL_Color color = {255, 0, 0, 255};
 
         SDL_Surface *text_surface = TTF_RenderText_Solid(font, label, strlen(label), color);
         if (!text_surface) {
