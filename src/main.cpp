@@ -2,7 +2,7 @@
  * Enzo Guarnieri                               RA
  * Júlia Campolim Oste                          RA
  * Gustavo Villela Mitraud                      RA
- * Matheus Marçal Ramos de Oliveira             RA
+ * Matheus Marçal Ramos de Oliveira             RA 10409001
  * Sabrina Midori Futami Teixeira de Carvalho   RA 10410220
  *
  * Class 07N - Subject: Visual Computing - Project n. 01
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
     // Analyzing image and converting to grayscale if needed
     if (!is_grey_scale(main_surface)) {
         to_grey_scale(main_surface);
-        SDL_Log("Imagem colorida convertida para escala de cinza.");
+        SDL_Log("Imagem fora da escala cinza convertida.");
     } else {
         SDL_Log("Imagem já está em escala de cinza.");
     }
