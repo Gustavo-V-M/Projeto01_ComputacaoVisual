@@ -22,4 +22,6 @@
 
 void to_grey_scale(SDL_Surface* surface);
 
+bool is_grey_scale(SDL_Surface* surface);
+
 #endif
