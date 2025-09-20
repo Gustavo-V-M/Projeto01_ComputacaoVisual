@@ -2,7 +2,7 @@
  * Enzo Guarnieri                               RA
  * Júlia Campolim Oste                          RA
  * Gustavo Villela Mitraud                      RA
- * Matheus Marçal Ramos de Oliveira             RA
+ * Matheus Marçal Ramos de Oliveira             RA 10409001
  * Sabrina Midori Futami Teixeira de Carvalho   RA 10410220
  * 
  * Class 07N - Subject: Visual Computation - Project n. 01
@@ -25,16 +25,40 @@ void to_grey_scale(SDL_Surface* surface) {
     SDL_LockSurface(surface);
 
     const SDL_PixelFormatDetails *format = SDL_GetPixelFormatDetails(surface->format);
-    
+
     Uint8 r, g, b, a;
     Uint32* pixels = (Uint32*)surface->pixels;
-    int pixel_count = (surface->w) * (surface->h);
+    const int pixel_count = surface->w * surface->h;
 
     for (int i = 0; i < pixel_count; ++i) {
         SDL_GetRGBA(pixels[i], format, NULL, &r, &g, &b, &a);
-        Uint8 grey = (Uint8)(0.2125 * r + 0.7154 * g + 0.0721 * b);
+        Uint8 grey = (Uint8)(0.2125 * r + 0.7154 * g + 0.0721 * b); //Equation to transform image to grayscale
         pixels[i] = SDL_MapRGBA(format, NULL, grey, grey, grey, a);
     }
 
     SDL_UnlockSurface(surface);
+}
+
+//Check if all pixels satisfy R == G == B
+bool is_grey_scale(SDL_Surface* surface) {
+    if (!surface) return false;
+
+    SDL_LockSurface(surface);
+
+    const SDL_PixelFormatDetails *format = SDL_GetPixelFormatDetails(surface->format);
+
+    Uint8 r, g, b, a;
+    Uint32* pixels = (Uint32*)surface->pixels;
+    const int pixel_count = surface->w * surface->h;
+
+    for (int i = 0; i < pixel_count; ++i) {
+        SDL_GetRGBA(pixels[i], format, NULL, &r, &g, &b, &a);
+        if (!(r == g && g == b)) {
+            SDL_UnlockSurface(surface);
+            return false;
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+    return true;
 }
