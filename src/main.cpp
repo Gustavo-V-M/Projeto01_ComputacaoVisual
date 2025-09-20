@@ -30,6 +30,7 @@
 #include <render.h>
 #include <to_grey_scale.h>
 #include <equalizator.h>
+#include <filesystem>
 
 using namespace std;
 
@@ -49,6 +50,19 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
     const char *main_image_path = argv[1];
+
+    // Check path to image
+    if (!std::filesystem::exists(main_image_path)) {
+        std::cerr << "Arquivo não encontrado: " << main_image_path << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    // Error 
+    SDL_Surface* surface = IMG_Load(main_image_path);
+    if (!surface) {
+        std::cerr << "Erro ao carregar a imagem: SDL não reconhece essa imagem ->  '" << main_image_path << "': " << SDL_GetError() << std::endl;
+        return EXIT_FAILURE;
+    }
 
     // Images sizes
     int main_width, main_height;

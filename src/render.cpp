@@ -263,9 +263,7 @@ bool save_surface(SDL_Surface* surface) {
         return false;
     }
 
-    printf("%d", IMG_SavePNG(surface,  "output_image.png"));
-
-    if (IMG_SavePNG(surface,  "/assets/output_image.png") < 0) {
+    if (IMG_SavePNG(surface,  "output_image.png") < 0) {
         SDL_Log("Erro ao salvar PNG: %s", SDL_GetError());
         return false;
     }
