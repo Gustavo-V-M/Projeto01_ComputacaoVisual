@@ -19,7 +19,7 @@
 #include <SDL3/SDL_surface.h>
 
 //Transforms all pixels in grey scale
-static void to_grey_scale(SDL_Surface* surface) {
+void to_grey_scale(SDL_Surface* surface) {
     if (!surface) return;
 
     SDL_LockSurface(surface);
@@ -40,7 +40,7 @@ static void to_grey_scale(SDL_Surface* surface) {
 }
 
 //Check if all pixels satisfy R == G == B
-static bool is_grey_scale(SDL_Surface* surface) {
+bool is_grey_scale(SDL_Surface* surface) {
     if (!surface) return false;
 
     SDL_LockSurface(surface);

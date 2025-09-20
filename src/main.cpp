@@ -99,7 +99,7 @@ int main(int argc, char **argv)
         return SDL_APP_FAILURE;
     }
 
-    TTF_Font *font = TTF_OpenFont("../../assets/font-roboto.ttf", 18.0f);
+    TTF_Font *font = TTF_OpenFont("font-roboto.ttf", 18.0f);
     //TTF_SetFontStyle(font, TTF_STYLE_BOLD);
 
     if (!font) {
