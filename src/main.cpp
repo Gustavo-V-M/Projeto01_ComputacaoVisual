@@ -161,6 +161,7 @@ int main(int argc, char **argv)
     args.equalized_texture = &equalized_texture;
     args.font = &font;
     args.text_histogram_texture = &text;
+    args.equalized_surface = equalized_surface;
 
     renderer.event_loop(args);
 

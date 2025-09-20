@@ -35,6 +35,7 @@ typedef struct
     SDL_Texture **equalized_histogram_texture;
     TTF_Font **font;
     char **text_histogram_texture;
+    SDL_Surface *equalized_surface;
 } event_loop_arguments;
 
 class Renderer

@@ -254,32 +254,67 @@ void Renderer::render_secondary(SDL_Renderer *renderer, SDL_Texture *texture, SD
     SDL_RenderPresent(renderer);
 }
 
+
+bool save_surface(SDL_Surface* surface) {
+
+    printf("saving image");
+    if (!surface) {
+        SDL_Log("Surface inválida!");
+        return false;
+    }
+
+    printf("%d", IMG_SavePNG(surface,  "output_image.png"));
+
+    if (IMG_SavePNG(surface,  "/assets/output_image.png") < 0) {
+        SDL_Log("Erro ao salvar PNG: %s", SDL_GetError());
+        return false;
+    }
+
+    return true;
+}
+
+
 void Renderer::event_loop(event_loop_arguments args) {
     SDL_Log("Entering event loop");
     bool running = true;
     SDL_Event event;
+
     while (running) {
         while (SDL_PollEvent(&event)) {
-            if (is_closed(event, *args.main_window) || (
-                    event.type == SDL_EVENT_QUIT || (
-                        event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE))) {
+
+            // --- TECLA S: SALVAR EQUALIZED SURFACE ---
+            if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_S) {
+                if (args.equalized_surface) {
+                    save_surface(args.equalized_surface);
+                    SDL_Log("Surface salva em equalized.png");
+                }
+            }
+
+            // --- TECLA ESC / FECHAR JANELA ---
+            if (is_closed(event, *args.main_window) || 
+                event.type == SDL_EVENT_QUIT || 
+                (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE)) 
+            {
                 destroy_window(*args.main_window, *args.main_renderer, *args.unqualized_texture);
                 destroy_window(*args.secondary_window, *args.secondary_renderer, *args.unequalized_histogram_texture);
                 running = false;
                 break;
             }
         }
+
+        // --- RENDER ---
         if (!is_button_pressed) {
             render(*args.main_renderer, *args.unqualized_texture);
-            render_secondary(*args.secondary_renderer, *args.unequalized_histogram_texture, *args.secondary_window,
-                             *args.font, *args.text_histogram_texture);
+            render_secondary(*args.secondary_renderer, *args.unequalized_histogram_texture,
+                             *args.secondary_window, *args.font, *args.text_histogram_texture);
         } else {
             render(*args.main_renderer, *args.equalized_texture);
-            render_secondary(*args.secondary_renderer, *args.equalized_histogram_texture, *args.secondary_window,
-                             *args.font, NULL);
+            render_secondary(*args.secondary_renderer, *args.equalized_histogram_texture,
+                             *args.secondary_window, *args.font, NULL);
         }
     }
 }
+
 
 bool Renderer::get_image_size(const char *path, int &width, int &height) {
     SDL_Surface *surface = IMG_Load(path);
