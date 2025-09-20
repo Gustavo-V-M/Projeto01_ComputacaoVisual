@@ -2,7 +2,7 @@
  * Enzo Guarnieri                               RA
  * Júlia Campolim Oste                          RA
  * Gustavo Villela Mitraud                      RA
- * Matheus Marçal Ramos de Oliveira             RA
+ * Matheus Marçal Ramos de Oliveira             RA 10409001
  * Sabrina Midori Futami Teixeira de Carvalho   RA 10410220
  * 
  * Class 07N - Subject: Visual Computation - Project n. 01
@@ -21,5 +21,6 @@
 #include <SDL3/SDL.h>
 
 void to_grey_scale(SDL_Surface* surface);
+bool is_grey_scale(SDL_Surface* surface);
 
 #endif
