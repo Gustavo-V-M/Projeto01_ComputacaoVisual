@@ -265,6 +265,7 @@ bool save_surface(SDL_Surface* surface) {
 
     if (IMG_SavePNG(surface,  "output_image.png") < 0) {
         SDL_Log("Erro ao salvar PNG: %s", SDL_GetError());
+        SDL_DestroySurface(surface);
         return false;
     }
 

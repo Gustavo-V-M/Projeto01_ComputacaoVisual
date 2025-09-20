@@ -59,6 +59,14 @@ The group decided to divide the project tasks as follows:
 
 ### 1.2. Loading the image
 
+The program loads the input image using the SDL\_image library (`IMG_Load()`). The steps involved are:
+
+1. **File existence check**: Before attempting to load the image, the program verifies that the file exists using C++17’s `std::filesystem::exists()`. If the file is missing, an error message is logged, and execution is stopped to prevent crashes.
+
+2. **SDL\_image initialization**: The library is initialized with support for common formats such as PNG, JPG, BMP, TIFF, and WEBP using `IMG_Init()`. This ensures that the program can handle a wide range of input images.
+
+3. **Loading and validation**: `IMG_Load()` reads the image from disk and returns an `SDL_Surface*`. If the function fails (due to unsupported format or corrupted file), an error is logged using `SDL_GetError()` and the program exits gracefully.
+
 ---
 
 ### 1.3. Analyzing and converting to grayscale
