@@ -40,6 +40,7 @@
 main
 main.exe
 font-roboto.ttf
+output_image.png
 
 # debug information files
 *.dwo
