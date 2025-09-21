@@ -144,6 +144,16 @@ Through this structure, the Renderer class guarantees a fluid interaction betwee
 
 ### 1.7. Saving the image
 
+The program allows saving the processed image directly from the main window.
+
+1. **Triggering the save action**: when the user presses the **S** key during execution, the application captures the current surface being displayed in the main window. Depending on the state of the toggle button, this may be either the original grayscale image or the equalized version.
+
+2. **File format and location**: regardless of the original format, the output is always saved as a **PNG** file. The resulting file is written to the same folder from which the program was launched, ensuring portability and avoiding the need for absolute paths.
+
+---
+
+Quer que eu adicione também um pequeno **Implementation overview** (em bullets), igual ao das outras seções, listando `save_surface()`, `IMG_SavePNG()` e a tecla **S** no `event_loop()`?
+
 ---
 
 ## 2. Compiling and running

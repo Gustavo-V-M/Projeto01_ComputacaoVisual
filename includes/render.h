@@ -26,6 +26,7 @@ typedef struct
     TTF_Font **font;
     char **text_histogram_texture;
     SDL_Surface *equalized_surface;
+    SDL_Surface *raw_surface;
 } event_loop_arguments;
 
 class Renderer

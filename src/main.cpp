@@ -34,15 +34,32 @@
 
 using namespace std;
 
+
+Renderer* p_renderer = nullptr;
+SDL_Surface* main_surface;
+
+void safe_exit(){
+    if (main_surface) {
+        SDL_DestroySurface(main_surface);
+    }
+    if (p_renderer) {
+        p_renderer->sdl_exit();
+    }
+
+}
+
+
+
 int main(int argc, char **argv)
 {
     Renderer renderer;
+    SDL_Surface raw_surface;
 
     // Starts SDL
     if (!renderer.sdl_init())
         return EXIT_FAILURE;
 
-    atexit(renderer.sdl_exit);
+    atexit(safe_exit);
 
     // Images paths
     if (argc < 2) {
@@ -92,7 +109,7 @@ int main(int argc, char **argv)
     SDL_Renderer *main_renderer = main_window ? SDL_CreateRenderer(main_window, NULL) : NULL;
     SDL_Renderer *secondary_renderer = secondary_window ? SDL_CreateRenderer(secondary_window, NULL) : NULL;
 
-    SDL_Surface *main_surface = IMG_Load(main_image_path);
+    main_surface = IMG_Load(main_image_path);
 
     if (!main_surface)
     {
@@ -121,7 +138,6 @@ int main(int argc, char **argv)
         return SDL_APP_FAILURE;
     }
 
-    SDL_DestroySurface(main_surface);
     main_surface = converted_surface;
 
     // Analyzing image and converting to grayscale if needed
@@ -182,6 +198,7 @@ int main(int argc, char **argv)
     args.font = &font;
     args.text_histogram_texture = &text;
     args.equalized_surface = equalized_surface;
+    args.raw_surface = main_surface;
 
     renderer.event_loop(args);
 

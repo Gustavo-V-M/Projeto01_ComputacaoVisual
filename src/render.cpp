@@ -288,11 +288,14 @@ void Renderer::event_loop(event_loop_arguments args) {
     while (running) {
         while (SDL_PollEvent(&event)) {
 
-            // --- TECLA S: SALVAR EQUALIZED SURFACE ---
+            // --- TECLA S: SALVAR SURFACE ---
             if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_S) {
-                if (args.equalized_surface) {
+                if (is_button_pressed) {
                     save_surface(args.equalized_surface);
-                    SDL_Log("Surface salva em equalized.png");
+                    SDL_Log("Equalized surface salva em equalized.png");
+                }else{
+                    save_surface(args.raw_surface);
+                    SDL_Log("Raw surface salva em equalized.png");
                 }
             }
 
