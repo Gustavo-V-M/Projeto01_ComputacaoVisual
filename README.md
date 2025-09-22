@@ -174,6 +174,28 @@ The rendering process can be segmented in two steps:
 
 ### 1.6. Histogram equalization
 
+Histogram equalization enhances image contrast by redistributing pixel intensity values based on the cumulative distribution function (CDF).
+
+Implementation details:
+
+The Equalizator class manages both the original and equalized images (SDL_Surface*) and their histograms.
+
+- A lookup table (`new_values_lookuptable[256]`) is built by computing the CDF of the original histogram:
+
+- For each pixel of the original grayscale surface:
+
+- - The red channel (already equal to green/blue in grayscale) is extracted.
+
+- - Its value is replaced by the corresponding entry in the LUT.
+
+- - The alpha channel is preserved.
+
+- A new SDL_Surface is created with the remapped pixels, and a new histogram is computed for the equalized image.
+
+- The GUI toggle button switches between the original grayscale image/histogram and the equalized versions.
+
+This method guarantees that darker regions become lighter and bright regions more detailed, producing a more uniform histogram distribution.
+
 ---
 
 ### 1.7. Saving the image
