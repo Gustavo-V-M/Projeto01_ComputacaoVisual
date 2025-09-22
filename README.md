@@ -168,9 +168,9 @@ The render_histogram method generates a visual representation of the histogram a
 
 The rendering process can be segmented in two steps:
 
-1. Normalization: the highest value in the histogram is identified to normalize all other values, this ensures that the tallest bar reaches the top of the image output.
+1. **Normalization**: the highest value in the histogram is identified to normalize all other values, this ensures that the tallest bar reaches the top of the image output.
 
-2. Drawing: each histogram bar is scaled proportionally based on the image height and a vertical white line is drawn for each bin directly onto the pixel buffer using `SDL_MapRGBA`.
+2. **Drawing**: each histogram bar is scaled proportionally based on the image height and a vertical white line is drawn for each bin directly onto the pixel buffer using `SDL_MapRGBA`.
 
 ### 1.6. Histogram equalization
 
