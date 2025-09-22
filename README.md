@@ -184,15 +184,15 @@ The Equalizator class manages both the original and equalized images (SDL_Surfac
 
 - For each pixel of the original grayscale surface:
 
-- - The red channel (already equal to green/blue in grayscale) is extracted.
+	- The red channel (already equal to green/blue in grayscale) is extracted.
 
-- - Its value is replaced by the corresponding entry in the LUT.
+	- Its value is replaced by the corresponding entry in the LUT.
 
-- - The alpha channel is preserved.
+	- The alpha channel is preserved.
 
-- A new SDL_Surface is created with the remapped pixels, and a new histogram is computed for the equalized image.
+	- A new SDL_Surface is created with the remapped pixels, and a new histogram is computed for the equalized image.
 
-- The GUI toggle button switches between the original grayscale image/histogram and the equalized versions.
+	- The GUI toggle button switches between the original grayscale image/histogram and the equalized versions.
 
 This method guarantees that darker regions become lighter and bright regions more detailed, producing a more uniform histogram distribution.
 
