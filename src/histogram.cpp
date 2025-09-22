@@ -73,8 +73,8 @@ double Histogram::standard_deviation() {
     return standard_deviation;
 } 
 
- SDL_Surface *Histogram::render_histogram(int width, int height) {
-    if (width <= 0 || height <= 0) return nullptr;
+ SDL_Surface *Histogram::render_histogram(SDL_Renderer* renderer, int width, int height) {
+    if (!renderer || width <= 0 || height <= 0) return nullptr;
 
     SDL_Surface *surface = SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32);
     const SDL_PixelFormatDetails *format_details = SDL_GetPixelFormatDetails(surface->format);

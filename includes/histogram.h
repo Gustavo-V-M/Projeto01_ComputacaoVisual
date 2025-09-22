@@ -15,7 +15,7 @@ class Histogram {
         Histogram(SDL_Surface *surface);
         ~Histogram();
 
-        SDL_Surface* render_histogram(int width, int height);
+        SDL_Surface* render_histogram(SDL_Renderer* renderer, int width, int height);
         float mean_intensity();
         double standard_deviation();
         double *get_histogram();
