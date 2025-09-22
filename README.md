@@ -152,10 +152,6 @@ The program allows saving the processed image directly from the main window.
 
 ---
 
-Quer que eu adicione também um pequeno **Implementation overview** (em bullets), igual ao das outras seções, listando `save_surface()`, `IMG_SavePNG()` e a tecla **S** no `event_loop()`?
-
----
-
 ## 2. Compiling and running
 
 ---
