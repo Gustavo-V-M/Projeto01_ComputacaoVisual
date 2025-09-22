@@ -29,44 +29,6 @@ Histogram::Histogram(SDL_Surface *surface) {
 
 Histogram::~Histogram() {};
 double *Histogram::get_histogram() { return histogram; }
-bool Histogram::is_high_contrast() { 
-
-    double threshold = 40.0;
-    double standard_deviation = 0.0;
-    double mean = 0.0;
-
-    double sum = 0.0;
-    for (int i = 0; i < 256; i++) {
-        sum += histogram[i];
-    }
-    mean = sum / pixel_count;
-
-    for (int i = 0; i < 256; i++) {
-        standard_deviation += pow(histogram[i] - mean, 2);
-    }
-
-    SDL_Log("Standard Deviation: %f", sqrt(standard_deviation / pixel_count));
-
-    return (sqrt(standard_deviation / pixel_count) > threshold);
-
- } 
- 
-bool Histogram::is_dark() { 
-    int light_pixels = 0;
-    int dark_pixels = 0;
-    int threshold = 128; 
-    for (int i = 0; i < 256; i++) {
-        if (i < threshold) {
-            dark_pixels += histogram[i];
-        } else {
-            light_pixels += histogram[i];
-        }
-    }
-
-    SDL_Log("Dark pixels: %d, Light pixels: %d", dark_pixels, light_pixels);
-
-    return dark_pixels >= light_pixels;
- } 
 
  float Histogram::mean_intensity() {
     double total_intensity = 0.0;
@@ -111,8 +73,8 @@ double Histogram::standard_deviation() {
     return standard_deviation;
 } 
 
- SDL_Surface *Histogram::render_histogram(SDL_Renderer* renderer, int width, int height) {
-    if (!renderer || width <= 0 || height <= 0) return nullptr;
+ SDL_Surface *Histogram::render_histogram(int width, int height) {
+    if (width <= 0 || height <= 0) return nullptr;
 
     SDL_Surface *surface = SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32);
     const SDL_PixelFormatDetails *format_details = SDL_GetPixelFormatDetails(surface->format);

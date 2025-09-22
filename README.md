@@ -136,7 +136,41 @@ Through this structure, the Renderer class guarantees a fluid interaction betwee
 
 ### 1.5. Analyzing and displaying the histogram
 
----
+The histogram is created in the constructor of the Histogram class using a pointer to an `SDL_Surface`. Internally, it initializes an array of 256 elements, where each element represents the frequency of a specific gray scale intensity (0–255) across all pixels in the image (already converted to the gray scale).
+
+Once created, the histogram data are analyzed to determine two main characteristics of the image:
+
+- Brightness level: whether the image is dark, medium or light.
+- Contrast level: whether the contrast is low, medium or high.
+	
+**Analyzing the histogram**
+
+- Image brightness: to determine the brightness of the image, the average intensity is calculated using the `mean_intensity` method.
+	- If the mean is less than 85, the image is classified as dark.
+	- If the mean is greater than 170, the image is considered light.
+	- Values in between are categorized as medium brightness.
+		
+- Image contrast: to evaluate the image contrast, the standard deviation of pixel intensities is computed using the `standard_deviation` method.
+	- If the standard deviation is less than 40, the image has low contrast.
+	- If it's greater than 80, the contrast is high.
+	- All values in between indicate medium contrast.
+	
+
+**Displaying analysis results**
+
+To display the brightness and contrast classification on screen, it is used the renderText function. This function renders a given text string using the `SDL_ttf` extension, creating a text surface using the provided font and color, the surface is converted into a texture, and rendered it to the screen using the `SDL_RenderTexture`.
+
+In this project, the font used is Roboto and it is located at `assets/font-roboto.ttf`.
+
+**Rendering the Histogram**
+
+The render_histogram method generates a visual representation of the histogram as an `SDL_Surface`. It takes the desired width and height of the output image and returns a surface containing the rendered histogram.
+
+The rendering process can be segmented in two steps:
+
+1. Normalization: the highest value in the histogram is identified to normalize all other values, this ensures that the tallest bar reaches the top of the image output.
+
+2. Drawing: each histogram bar is scaled proportionally based on the image height and a vertical white line is drawn for each bin directly onto the pixel buffer using `SDL_MapRGBA`.
 
 ### 1.6. Histogram equalization
 
