@@ -249,5 +249,5 @@ cmake --build build
 ```
 4. The executable will be available in the root of the project. To run, use the following:
 ```
-./main assets;<image>
+./main assets/<image>
 ```
