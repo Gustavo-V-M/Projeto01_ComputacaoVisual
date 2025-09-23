@@ -220,11 +220,11 @@ The program allows saving the processed image directly from the main window.
 ```
 pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-make git
 ```
-4. clone the repository recursively:
+4. Clone the repository recursively:
 ```
 git clone --recurse-submodules https://github.com/Gustavo-V-M/Projeto01_ComputacaoVisual
 ```
-5. build the project:
+5. Build the project:
 ```
 cmake -S . -B build
 cmake --build build
@@ -238,11 +238,12 @@ cmake --build build
 ### 2.2. On Linux
 
 1. Install the necessary dependencies, available at: [https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies](https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies)
+   
 2. Clone the repository recursively:
 ```
 git clone --recurse-submodules https://github.com/Gustavo-V-M/Projeto01_ComputacaoVisual
 ```
-3. build the project:
+3. Build the project:
 ```
 cmake -S . -B build
 cmake --build build
