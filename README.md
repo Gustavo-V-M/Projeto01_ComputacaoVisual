@@ -73,7 +73,7 @@ The program loads the input image using the SDL\_image library (`IMG_Load()`). T
 
 Two in-place functions, `is_grey_scale(SDL_Surface*)` and `to_grey_scale(SDL_Surface*)`, are used to build the grayscale pipeline. They both work directly over the image's pixel buffer by utilizing SDL's surface API.
 
-1. **Verification** - `is_grey_scale` - Verification: after receiving a valid `SDL_Surface*`, the function locks the surface to obtain safe access to its pixel data and retrieves the pixel format description via `SDL_GetPixelFormatDetails(surface->format)`. It then scans every pixel (w * h), decoding each one with `SDL_GetRGBA(pixels[i], format, NULL, &r, &g, &b, &a)`. A pixel must have three equal color components R == G == B in order to be considered grayscale. The function unlocks the surface and returns false on the first mismatch, it unlocks and returns true if the entire scan is finished without any mismatches. To ensure consistent channel extraction, this is carried out in the main flow once the input surface has been converted to `SDL_PIXELFORMAT_RGBA32`.
+1. **Verification** - `is_grey_scale`: after receiving a valid `SDL_Surface*`, the function locks the surface to obtain safe access to its pixel data and retrieves the pixel format description via `SDL_GetPixelFormatDetails(surface->format)`. It then scans every pixel (w * h), decoding each one with `SDL_GetRGBA(pixels[i], format, NULL, &r, &g, &b, &a)`. A pixel must have three equal color components R == G == B in order to be considered grayscale. The function unlocks the surface and returns false on the first mismatch, it unlocks and returns true if the entire scan is finished without any mismatches. To ensure consistent channel extraction, this is carried out in the main flow once the input surface has been converted to `SDL_PIXELFORMAT_RGBA32`.
 
 2. **Conversion** - `to_grey_scale`: when the image is classified as colored, the converter locks the surface, iterates over all pixels, and again uses `SDL_GetRGBA` to read each pixel’s channels. It computes the luminance using the specified perceptual weights, _Y = 0.2125*R + 0.7154*G + 0.0721*B_, casts the result to Uint8, and writes it back to the same pixel with `SDL_MapRGBA(format, NULL, Y, Y, Y, a)`, preserving the original alpha. The surface is unlocked once the buffer has been processed in its entirety and is prepared as the canonical grayscale input for the next processes (histogram, equalization, rendering), and the operation is in-place and does not allocate a second picture.
 
@@ -171,6 +171,8 @@ The rendering process can be segmented in two steps:
 1. **Normalization**: the highest value in the histogram is identified to normalize all other values, this ensures that the tallest bar reaches the top of the image output.
 
 2. **Drawing**: each histogram bar is scaled proportionally based on the image height and a vertical white line is drawn for each bin directly onto the pixel buffer using `SDL_MapRGBA`.
+
+---
 
 ### 1.6. Histogram equalization
 
