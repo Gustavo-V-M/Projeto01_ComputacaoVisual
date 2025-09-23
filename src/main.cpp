@@ -45,10 +45,7 @@ void safe_exit(){
     if (p_renderer) {
         p_renderer->sdl_exit();
     }
-
 }
-
-
 
 int main(int argc, char **argv)
 {
@@ -77,7 +74,7 @@ int main(int argc, char **argv)
     // Error 
     SDL_Surface* surface = IMG_Load(main_image_path);
     if (!surface) {
-        std::cerr << "Erro ao carregar a imagem: SDL não reconhece essa imagem ->  '" << main_image_path << "': " << SDL_GetError() << std::endl;
+        std::cerr << "Error loading image: SDL doesn't recognize this image ->  '" << main_image_path << "': " << SDL_GetError() << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -143,9 +140,9 @@ int main(int argc, char **argv)
     // Analyzing image and converting to grayscale if needed
     if (!is_grey_scale(main_surface)) {
         to_grey_scale(main_surface);
-        SDL_Log("Imagem fora da escala cinza convertida.");
+        SDL_Log("Image out of greyscale converted.");
     } else {
-        SDL_Log("Imagem já está em escala de cinza.");
+        SDL_Log("Image already in greyscale.");
     }
 
     Histogram histogram(main_surface);
@@ -179,11 +176,11 @@ int main(int argc, char **argv)
     float histogram_mean = histogram.mean_intensity();
     float histogram_stddev = histogram.standard_deviation();
 
-    const char *intensity = histogram_mean < 85 ? "escura" : (histogram_mean > 170 ? "clara" : "média");
-    const char *contrast = histogram_stddev < 35 ? "baixo" : (histogram_stddev > 80 ? "alto" : "médio");
+    const char *intensity = histogram_mean < 85 ? "dark" : (histogram_mean > 170 ? "light" : "medium");
+    const char *contrast = histogram_stddev < 35 ? "low" : (histogram_stddev > 80 ? "high" : "medium");
 
     auto text = new char[80];
-    snprintf(text, 80, "Imagem %s de %s contraste", intensity, contrast);
+    snprintf(text, 80, "%s image of %s contrast", intensity, contrast);
 
     // Calls the event loop
     event_loop_arguments args;
