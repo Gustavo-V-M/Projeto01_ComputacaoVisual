@@ -176,8 +176,8 @@ int main(int argc, char **argv)
     float histogram_mean = histogram.mean_intensity();
     float histogram_stddev = histogram.standard_deviation();
 
-    const char *intensity = histogram_mean < 85 ? "dark" : (histogram_mean > 170 ? "light" : "medium");
-    const char *contrast = histogram_stddev < 35 ? "low" : (histogram_stddev > 80 ? "high" : "medium");
+    const char *intensity = histogram_mean < 85 ? "Dark" : (histogram_mean > 170 ? "Light" : "Medium");
+    const char *contrast = histogram_stddev < 35 ? "Low" : (histogram_stddev > 80 ? "High" : "Medium");
 
     auto text = new char[80];
     snprintf(text, 80, "%s image of %s contrast", intensity, contrast);
